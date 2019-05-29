@@ -3,22 +3,29 @@ import { withStyles } from "@material-ui/core/styles";
 import { Paper } from "@material-ui/core";
 import NoContent from "./Pin/NoContent";
 import CreatePin from "./Pin/CreatePin";
-
+import PinContent from "./Pin/PinContent";
+import { unstable_useMediaQuery as useMediaQuery } from "@material-ui/core/useMediaQuery";
 import Context from "../context";
 
 const Blog = ({ classes }) => {
+  const mobileSize = useMediaQuery("(max-width:650px)");
+
   const {
-    state: { draft }
+    state: { draft, currentPin }
   } = useContext(Context);
+
+  console.log({ currentPin });
   let BlogContent;
-  if (!draft) {
+  if (!draft && !currentPin) {
     BlogContent = NoContent;
-  } else if (draft) {
+  } else if (draft && !currentPin) {
     BlogContent = CreatePin;
+  } else if (!draft && currentPin) {
+    BlogContent = PinContent;
   }
 
   return (
-    <Paper className={classes.root}>
+    <Paper className={mobileSize ? classes.rootMobile : classes.root}>
       <BlogContent />
     </Paper>
   );
