@@ -9,18 +9,44 @@ import LandscapeIcon from "@material-ui/icons/LandscapeOutlined";
 import ClearIcon from "@material-ui/icons/Clear";
 import SaveIcon from "@material-ui/icons/SaveTwoTone";
 import Context from "../../context";
+import { CREATE_PIN_MUTATION } from "../../graphql/mutations";
+import { useClient } from "../../client";
 
 const CreatePin = ({ classes }) => {
-  const { dispatch } = useContext(Context);
+  const client = useClient();
+  const { state, dispatch } = useContext(Context);
 
   const [title, setTitle] = useState("");
   const [image, setImage] = useState("");
   const [content, setContent] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async event => {
-    event.preventDefault();
-    const url = await handleImageUpload();
-    console.log({ title, image, content, url });
+    try {
+      event.preventDefault();
+      setSubmitting(true);
+
+      const url = await handleImageUpload();
+      const { latitude, longitude } = state.draft;
+      const variables = {
+        title,
+        image: url,
+        content,
+        latitude,
+        longitude
+      };
+      const { createPin } = await client.request(
+        CREATE_PIN_MUTATION,
+        variables
+      );
+
+      console.log({ createPin });
+      dispatch({ type: "CREATE_PIN", payload: createPin });
+      handleDeleteDraft();
+    } catch (err) {
+      setSubmitting(false);
+      console.error("Error creating pin ", err);
+    }
   };
 
   const handleDeleteDraft = () => {
@@ -104,7 +130,7 @@ const CreatePin = ({ classes }) => {
           className={classes.button}
           variant="contained"
           color="secondary"
-          disabled={!title.trim() || !content.trim() || !image}
+          disabled={!title.trim() || !content.trim() || !image || submitting}
           onClick={handleSubmit}
         >
           Submit
