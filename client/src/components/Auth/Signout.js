@@ -25,8 +25,8 @@ const Signout = ({ classes }) => {
             className={classes.buttonText}
           >
             Signout
-            <ExitToAppIcon className={classes.buttonIcon} />
           </Typography>
+          <ExitToAppIcon className={classes.buttonIcon} />
         </span>
       )}
     />

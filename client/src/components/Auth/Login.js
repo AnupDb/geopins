@@ -15,22 +15,23 @@ const Login = ({ classes }) => {
   const onSuccess = async googleUser => {
     try {
       const idToken = googleUser.getAuthResponse().id_token;
+
       const client = new GraphQLClient(BASE_URL, {
         headers: { authorization: idToken }
       });
+
       const { me } = await client.request(ME_QUERY);
-
       console.log({ me });
-
       dispatch({ type: "LOGIN_USER", payload: me });
+      dispatch({ type: "IS_LOGGED_IN", payload: true });
     } catch (err) {
       onFailure(err);
+      dispatch({ type: "IS_LOGGED_IN", payload: false });
     }
   };
 
   const onFailure = err => {
     console.error("Error logging in ", err);
-    dispatch({ type: "IS_LOGGED_IN", payload: false });
   };
   return (
     <div className={classes.root}>

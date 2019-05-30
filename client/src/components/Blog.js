@@ -14,7 +14,6 @@ const Blog = ({ classes }) => {
     state: { draft, currentPin }
   } = useContext(Context);
 
-  console.log({ currentPin });
   let BlogContent;
   if (!draft && !currentPin) {
     BlogContent = NoContent;

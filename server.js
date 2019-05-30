@@ -10,10 +10,9 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: async ({ req }) => {
-    let authToken = null;
     let currentUser = null;
     try {
-      authToken = req.headers.authorization;
+      const authToken = req.headers.authorization;
       if (authToken) {
         currentUser = await findOrCreateUser(authToken);
       }

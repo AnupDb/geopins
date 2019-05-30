@@ -4,6 +4,7 @@ import { Route, Redirect } from "react-router-dom";
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
   const { state } = useContext(Context);
+
   return (
     <Route
       render={props =>
